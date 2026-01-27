@@ -1,23 +1,139 @@
- body { background: #2b2b2b; font-family: Arial; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0;}
-    .player { width: 300px; background: #e0dede; color: #2b2b2b; padding: 10px; border: 2px solid #444; position: absolute; top: 50px; left: 50px;}
-    .title-bar { background: #444; color: white; padding: 8px; cursor: move; text-align: center;}
-    .controls { margin-top: 10px; text-align: center;}
-    button, input[type="file"], input[type="text"], select { margin: 5px; padding: 5px; }
-    #playlist { list-style: none; padding: 0; max-height: 150px; overflow-y: auto; border-top: 1px solid #999; margin-top: 10px;}
-    #playlist li { padding: 4px 8px; cursor: pointer; }
-    #playlist li:hover { background: #ccc; }
-    .current-song { text-align: center; margin-top: 10px; font-size: 12px; }
-    #progress-container { width: 100%; height: 10px; background: #ccc; border: 1px solid #999; margin-top: 10px; cursor: pointer; position: relative;}
-    #progress { width: 0%; height: 100%; background: #444;}
 
-.player {
-  position: absolute;   /* REQUIRED */
-  top: 50px;
-  left: 50px;
-}
+    /* ===== RESET ===== */
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: #222;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    /* ===== PLAYER WINDOW ===== */
+    .player {
+      width: 720px;
+      height: 420px;
+      background: #ddd;
+      padding: 16px;
+      display: flex;
+      gap: 16px;
+      border-radius: 6px;
+    }
+
+    /* ===== LEFT PANEL ===== */
+    .player-left {
+      width: 220px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .cover-panel {
+      width: 100%;
+      height: 220px;
+      background: #6faee8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .cover-panel img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .current-song {
+      height: 60px;
+      background: #6faee8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 6px;
+      font-weight: bold;
+    }
+
+    /* ===== RIGHT PANEL ===== */
+    .player-right {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* ===== CONTROLS ===== */
+    .controls {
+      display: flex;
+      gap: 8px;
+    }
+
+    .controls input[type="file"] {
+      flex: 2;
+    }
+
+    .controls button {
+      flex: 1;
+      background: #6faee8;
+      border: none;
+      padding: 8px;
+      cursor: pointer;
+    }
+
+    /* ===== PROGRESS BAR ===== */
+    #progress-container {
+      height: 28px;
+      background: #004aad;
+      position: relative;
+    }
+
+    #progress {
+      height: 100%;
+      width: 0%;
+      background: #9bd0ff;
+    }
+
+    /* ===== PLAYLIST CONTROLS ===== */
+    .playlist-controls {
+      display: flex;
+      gap: 8px;
+    }
+
+    .playlist-controls input,
+    .playlist-controls button,
+    .playlist-controls select {
+      flex: 1;
+      padding: 6px;
+    }
+
+    /* ===== PLAYLIST ===== */
+    #playlist {
+      flex: 1;
+      background: #6faee8;
+      list-style: none;
+      margin: 0;
+      padding: 8px;
+      overflow-y: auto;
+    }
+
+    #playlist li {
+      padding: 6px;
+      cursor: pointer;
+      border-bottom: 1px solid rgba(0,0,0,0.2);
+    }
+
+    #playlist li:hover {
+      background: rgba(255,255,255,0.3);
+    }
 
 .title-bar {
   cursor: move;
   user-select: none;
 }
+
 
