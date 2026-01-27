@@ -179,35 +179,3 @@ function updatePlaylistSelector() {
   if (currentPlaylist) playlistSelector.value = currentPlaylist;
 }
 
-// ----------------- Draggable Window -----------------
-const player = document.getElementById("player");
-const titleBar = document.getElementById("titleBar");
-
-let isDragging = false;
-let offsetX = 0;
-let offsetY = 0;
-
-titleBar.addEventListener("mousedown", (e) => {
-  isDragging = true;
-  const rect = player.getBoundingClientRect();
-  offsetX = e.clientX - rect.left;
-  offsetY = e.clientY - rect.top;
-});
-
-document.addEventListener("mousemove", (e) => {
-  if (!isDragging) return;
-
-  let x = e.clientX - offsetX;
-  let y = e.clientY - offsetY;
-
-  // keep window on screen
-  x = Math.max(0, Math.min(x, window.innerWidth - player.offsetWidth));
-  y = Math.max(0, Math.min(y, window.innerHeight - player.offsetHeight));
-
-  player.style.left = x + "px";
-  player.style.top = y + "px";
-});
-
-document.addEventListener("mouseup", () => {
-  isDragging = false;
-});
