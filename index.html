@@ -2,39 +2,51 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <title>Web MP3 Player</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Web MP3 Player with Playlist</title>
-  <link rel="icon" type="image/png" href="icon.png">
   <link rel="stylesheet" href="style.css">
-  <link rel="manifest" href="manifest.json">
 </head>
+
 <body>
 
 <div class="player" id="player">
-  <div class="title-bar" id="titleBar">🎵 MP3 Player</div>
 
-  <div class="controls">
-    <input type="file" id="fileInput" accept="audio/*" multiple>
-    <button id="playBtn">▶ Play</button>
-    <button id="pauseBtn">⏸ Pause</button>
-    <button id="prevBtn">⏮ Prev</button>
-    <button id="nextBtn">⏭ Next</button>
+  <!-- LEFT -->
+  <div class="player-left">
+    <div class="cover-panel">
+      <img id="cover" src="icon.png" alt="Album cover">
+    </div>
+    <div class="current-song" id="currentSong">
+      No song loaded
+    </div>
   </div>
 
-  <div id="progress-container">
-    <div id="progress"></div>
-  </div>
-  
+  <!-- RIGHT -->
+  <div class="player-right">
 
-  <div class="playlist-controls">
-    <input type="text" id="newPlaylistName" placeholder="New Playlist Name">
-    <button id="createPlaylistBtn">Create Playlist</button>
-    <select id="playlistSelector"></select>
+    <div class="controls">
+      <input type="file" id="fileInput" accept="audio/*" multiple>
+      <button id="prevBtn">⏮</button>
+      <button id="playBtn">▶</button>
+      <button id="pauseBtn">⏸</button>
+      <button id="nextBtn">⏭</button>
+    </div>
+
+    <div id="progress-container">
+      <div id="progress"></div>
+    </div>
+
+    <div class="playlist-controls">
+      <input type="text" id="newPlaylistName" placeholder="New Playlist Name">
+      <button id="createPlaylistBtn">Create</button>
+      <select id="playlistSelector"></select>
+    </div>
+
+    <ul id="playlist"></ul>
+
   </div>
 
-  <ul id="playlist"></ul>
   <audio id="audio"></audio>
-  <div class="current-song" id="currentSong">No song loaded</div>
 </div>
 
 <script src="script.js"></script>
