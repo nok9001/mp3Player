@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Noah Desktop</title>
+  <style>
+   /* ================= BODY ================= */
+body {
+  margin: 0;
+  background: linear-gradient(#3a6ea5, #1e3f66);
+  font-family: Tahoma, Verdana, sans-serif;
+  color: black;
+}
+
+/* ================= CLOCK ================= */
+#clock {
+  position: fixed;
+  top: 10px;
+  right: 20px;
+  background: linear-gradient(#ffffff, #dcdcdc);
+  padding: 5px 12px;
+  border: 2px solid #7f9db9;
+  font-size: 14px;
+  box-shadow: inset 1px 1px white, inset -1px -1px #7f9db9;
+}
+
+/* ================= WINDOW ================= */
+.window {
+  position: absolute;
+  width: 450px;
+  background: #ece9d8;
+  border: 3px solid #0054e3;
+  box-shadow: 4px 4px 8px rgba(0,0,0,0.5);
+  border-radius: 6px;
+}
+
+/* ================= TITLE BAR ================= */
+.title-bar {
+  background: linear-gradient(to bottom, #0a59f7, #0038a8);
+  color: white;
+  padding: 6px;
+  font-weight: bold;
+  cursor: move;
+  border-bottom: 2px solid #002d82;
+  font-size: 14px;
+}
+
+/* ================= BUTTONS ================= */
+button {
+  background: linear-gradient(#ffffff, #dcdcdc);
+  border: 2px solid #7f9db9;
+  padding: 4px 10px;
+  font-family: Tahoma;
+  cursor: pointer;
+  box-shadow: inset 1px 1px white, inset -1px -1px #7f9db9;
+}
+
+button:active {
+  box-shadow: inset -1px -1px white, inset 1px 1px #7f9db9;
+}
+
+/* ================= INPUTS ================= */
+input, select {
+  border: 2px solid #7f9db9;
+  background: white;
+  padding: 3px;
+  font-family: Tahoma;
+}
+
+/* ================= LIST ================= */
+ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 10px;
+  background: white;
+  border: 2px inset #7f9db9;
+  height: 120px;
+  overflow-y: auto;
+}
+
+li {
+  padding: 5px;
+  font-size: 13px;
+}
+
+li:hover {
+  background: #cce0ff;
+}
+
+/* ================= VIDEO ================= */
+video {
+  margin-top: 10px;
+  border: 2px inset #7f9db9;
+  background: black;
+}
+
+  </style>
+</head>
+<body>
+
+<div id="clock"></div>
+
+<!-- MUSIC WINDOW -->
+<div class="window" id="musicWindow">
+  <div class="title-bar">🎵 Music</div>
+
+  <select id="playlistSelector"></select>
+  <input id="newPlaylistName" placeholder="New Playlist">
+  <button id="createPlaylist">Create</button>
+  <br><br>
+
+  <input type="file" id="fileInput" multiple accept="audio/*">
+  <ul id="songList"></ul>
+
+  <audio id="audio"></audio>
+  <br>
+  <button id="prev">Prev</button>
+  <button id="play">Play</button>
+  <button id="pause">Pause</button>
+  <button id="next">Next</button>
+</div>
+
+<!-- MOVIE WINDOW -->
+<div class="window" id="movieWindow">
+  <div class="title-bar">🎬 Movies</div>
+  <ul id="movieList"></ul>
+  <video id="video" controls width="400"></video>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+
+let db;
+let playlists = {};
+let currentPlaylist = null;
+let currentIndex = 0;
+let movies = [];
+
+/* ================= CLOCK ================= */
+const clock = document.getElementById("clock");
+setInterval(() => {
+  clock.textContent = new Date().toLocaleTimeString();
+}, 1000);
+
+/* ================= DRAG WINDOWS ================= */
+document.querySelectorAll(".window").forEach(win => {
+  const header = win.querySelector(".title-bar");
+  header.onmousedown = (e) => {
+    let offsetX = e.clientX - win.offsetLeft;
+    let offsetY = e.clientY - win.offsetTop;
+    document.onmousemove = (e) => {
+      win.style.left = e.clientX - offsetX + "px";
+      win.style.top = e.clientY - offsetY + "px";
+    };
+    document.onmouseup = () => {
+      document.onmousemove = null;
+    };
+  };
+});
+
+/* ================= DATABASE ================= */
+const request = indexedDB.open("NOAH_DESKTOP_DB", 1);
+
+request.onupgradeneeded = (e) => {
+  db = e.target.result;
+  db.createObjectStore("playlists", { keyPath: "name" });
+  db.createObjectStore("songs", { keyPath: "id", autoIncrement: true });
+  db.createObjectStore("movies", { keyPath: "id", autoIncrement: true });
+};
+
+request.onsuccess = () => {
+  db = request.result;
+  loadPlaylists();
+  loadMovies();
+};
+
+/* ================= PLAYLISTS ================= */
+
+function loadPlaylists() {
+  const tx = db.transaction("playlists", "readonly");
+  tx.objectStore("playlists").getAll().onsuccess = e => {
+    e.target.result.forEach(p => playlists[p.name] = []);
+    loadSongs();
+  };
+}
+
+function loadSongs() {
+  const tx = db.transaction("songs", "readonly");
+  tx.objectStore("songs").getAll().onsuccess = e => {
+    e.target.result.forEach(song => {
+      if (!playlists[song.playlist]) playlists[song.playlist] = [];
+      playlists[song.playlist].push({
+        name: song.name,
+        blob: new Blob([song.data])
+      });
+    });
+    updatePlaylistSelector();
+  };
+}
+
+function updatePlaylistSelector() {
+  const selector = document.getElementById("playlistSelector");
+  selector.innerHTML = "";
+  Object.keys(playlists).forEach(name => {
+    const option = document.createElement("option");
+    option.value = name;
+    option.textContent = name;
+    selector.appendChild(option);
+  });
+  currentPlaylist = selector.value;
+  renderSongs();
+}
+
+document.getElementById("createPlaylist").onclick = () => {
+  const name = document.getElementById("newPlaylistName").value.trim();
+  if (!name || playlists[name]) return;
+
+  playlists[name] = [];
+
+  const tx = db.transaction("playlists", "readwrite");
+  tx.objectStore("playlists").add({ name });
+
+  updatePlaylistSelector();
+};
+
+document.getElementById("playlistSelector").onchange = e => {
+  currentPlaylist = e.target.value;
+  renderSongs();
+};
+
+function renderSongs() {
+  const list = document.getElementById("songList");
+  list.innerHTML = "";
+  if (!currentPlaylist) return;
+
+  playlists[currentPlaylist].forEach((song, i) => {
+    const li = document.createElement("li");
+    li.textContent = song.name;
+    li.onclick = () => playSong(i);
+    list.appendChild(li);
+  });
+}
+
+/* ================= SONG UPLOAD ================= */
+
+document.getElementById("fileInput").onchange = e => {
+  const files = Array.from(e.target.files);
+  files.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const tx = db.transaction("songs", "readwrite");
+      tx.objectStore("songs").add({
+        name: file.name,
+        playlist: currentPlaylist,
+        data: reader.result
+      });
+      playlists[currentPlaylist].push({
+        name: file.name,
+        blob: new Blob([reader.result])
+      });
+      renderSongs();
+    };
+    reader.readAsArrayBuffer(file);
+  });
+};
+
+/* ================= AUDIO CONTROLS ================= */
+
+const audio = document.getElementById("audio");
+
+function playSong(index) {
+  currentIndex = index;
+  const song = playlists[currentPlaylist][index];
+  audio.src = URL.createObjectURL(song.blob);
+  audio.play();
+}
+
+document.getElementById("play").onclick = () => audio.play();
+document.getElementById("pause").onclick = () => audio.pause();
+document.getElementById("next").onclick = () => {
+  currentIndex = (currentIndex + 1) % playlists[currentPlaylist].length;
+  playSong(currentIndex);
+};
+document.getElementById("prev").onclick = () => {
+  currentIndex = (currentIndex - 1 + playlists[currentPlaylist].length) % playlists[currentPlaylist].length;
+  playSong(currentIndex);
+};
+
+audio.onended = () => {
+  document.getElementById("next").click();
+};
+
+/* ================= MOVIES ================= */
+
+function loadMovies() {
+  const tx = db.transaction("movies", "readonly");
+  tx.objectStore("movies").getAll().onsuccess = e => {
+    movies = e.target.result;
+    if (movies.length === 0) seedMovie();
+    renderMovies();
+  };
+}
+
+function seedMovie() {
+  const tx = db.transaction("movies", "readwrite");
+  tx.objectStore("movies").add({
+    name: "FNAF",
+    path: "movies/Five-Nights-at-Freddys_1080p.mp4"
+  });
+  movies.push({
+    name: "FNAF",
+    path: "movies/Five-Nights-at-Freddys_1080p.mp4"
+  });
+}
+
+function renderMovies() {
+  const list = document.getElementById("movieList");
+  list.innerHTML = "";
+  movies.forEach((m, i) => {
+    const li = document.createElement("li");
+    li.textContent = m.name;
+    li.onclick = () => {
+      document.getElementById("video").src = m.path;
+    };
+    list.appendChild(li);
+  });
+}
+
+});
+
+</script>
+</body>
+</html>

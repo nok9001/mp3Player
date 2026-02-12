@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Noah Desktop</title>
+  <link rel="stylesheet" href="perstyle.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body class="desktop">
+
+
+
+<!-- ================= MUSIC WINDOW ================= -->
+<div id="musicWindow" class="window musicWindow" style="display:none; height: 450px; width: 680px;">
+  <div class="title-bar" onmousedown="dragWindow(event, 'musicWindow')">
+    🎵 Music Player
+    <button class="close-btn" onclick="closeMusic()">✕</button>
+  </div>
+
+  <div class="player" id="player">
+
+    <!-- LEFT - PLAYLISTS LIST -->
+    <div class="player-left">
+      <div class="playlist-header">Playlists</div>
+      <div class="playlists-list-container">
+        <ul id="playlistSelector"></ul>
+      </div>
+      <div class="playlist-controls">
+        <input type="text" id="newPlaylistName" placeholder="New Playlist">
+        <button id="createPlaylistBtn">Create</button>
+      </div>
+    </div>
+
+    <!-- RIGHT - SONGS & CONTROLS -->
+    <div class="player-right">
+      <div class="current-song" id="currentSong">
+        No song loaded
+      </div>
+
+      <div class="controls">
+        <input type="file" id="fileInput" accept="audio/*" multiple>
+        <button id="prevBtn">⏮</button>
+        <button id="playBtn">▶</button>
+        <button id="pauseBtn">⏸</button>
+        <button id="nextBtn">⏭</button>
+      </div>
+
+      <div id="progress-container">
+        <div id="progress"></div>
+      </div>
+
+      <div class="songs-header">Songs</div>
+      <ul id="playlist"></ul>
+    </div>
+
+    <audio id="audio"></audio>
+  </div>
+</div>
+
+<!-- ================= NOTES WINDOW ================= -->
+<div id="notesWindow" class="window notesWindow" style="display:none; top:120px; left:180px; width:360px; height:320px;">
+  <div class="title-bar" onmousedown="dragWindow(event, 'notesWindow')">
+    🗒️ Notes
+    <button class="close-btn" onclick="closeNotes()">✕</button>
+  </div>
+
+  <div class="window-content">
+    <textarea id="notesArea" placeholder="Write notes here..." style="width:100%; height:220px; box-sizing:border-box;"></textarea>
+    <div style="margin-top:8px; display:flex; gap:8px; justify-content:flex-end;">
+      <button onclick="document.getElementById('notesArea').value = ''">Clear</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= WELCOME WINDOW ================= -->
+<div id="welcomeWindow" class="window" style="background:#f5eeee; display:none;">
+  <div class="title-bar" onmousedown="dragWindow(event, 'welcomeWindow')">
+    Hello
+    <button class="close-btn" onclick="closeWindow('welcomeWindow')">✕</button>
+  </div>
+
+  <div class="window-content">
+    <h1><span style="color:#5636e6;">welcome</span></h1>
+    <p style="color:black; font-style: 'Brush Script MT', cursive;">To your desktop.</p>
+  </div>
+</div>
+
+
+
+<!-- ================= TASKBAR ================= -->
+<div id="taskbar">
+  <button class="task-btn" onclick="openMusic()">🎵 Music</button>
+  <button class="task-btn" onclick="openCidwo()">🎬 Movies</button>
+  <button class="task-btn" onclick="openChat()">💬 Chat</button>
+  <span id="clock"></span>
+</div>
+
+<!-- ================= CIDWO PLAYER WINDOW ================= -->
+<div id="cidwoWindow" class="window cidwoWindow" 
+     style="display:none; top:140px; left:220px; width:700px; height:420px;">
+
+  <div class="title-bar" onmousedown="dragWindow(event, 'cidwoWindow')">
+    ▶ Media Player
+    <button class="close-btn" onclick="closeCidwo()">✕</button>
+  </div>
+
+  <div class="window-content cidwo-layout">
+
+    <!-- LEFT: VIDEO -->
+    <div class="video-section">
+      <video id="cidwoVideo" controls></video>
+    </div>
+
+    <!-- RIGHT: MOVIE LIST -->
+    <div class="movie-section">
+      <div class="movie-title">🎬 Select a Movie to Watch</div>
+      <ul id="movieList"></ul>
+    </div>
+
+  </div>
+</div>
+
+<!-- ================= LOGIN WINDOW ================= -->
+<div id="loginWindow" class="window" style="display:block; top:50%; left:50%; transform:translate(-50%,-50%); width:350px;">
+  <div class="title-bar" onmousedown="dragWindow(event, 'loginWindow')">
+    💬 Chat Login
+  </div>
+  <div class="window-content" style="text-align:center; padding:20px;">
+    <p>Enter your username to join the chat</p>
+    <input type="text" id="usernameInput" placeholder="Your username" style="width:80%; padding:8px; margin:10px 0;">
+    <button onclick="loginToChat()" style="width:80%; padding:10px; margin-top:10px;">Join Chat</button>
+  </div>
+</div>
+
+<!-- ================= CHAT ROOM WINDOW ================= -->
+<div id="chatWindow" class="window chatWindow" 
+     style="display:none; top:100px; left:400px; width:800px; height:500px;">
+
+  <div class="title-bar" onmousedown="dragWindow(event, 'chatWindow')">
+    💬 Chat Room - <span id="currentChatName">Not connected</span>
+    <button class="close-btn" onclick="closeChat()">✕</button>
+  </div>
+
+  <div class="chat-layout" style="display:flex; height:calc(100% - 24px);">
+    
+    <!-- LEFT - CHAT LIST -->
+    <div class="chat-sidebar">
+      <div class="sidebar-header">Chats</div>
+      
+      <div class="sidebar-section">
+        <div class="section-title">Direct Messages</div>
+        <ul id="directList" class="chat-list"></ul>
+        <button id="newDirectBtn" onclick="openNewDirect()" style="width:90%; margin:8px auto; display:block;">+ New Direct</button>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="section-title">Groups</div>
+        <ul id="groupList" class="chat-list"></ul>
+        <button id="newGroupBtn" onclick="openNewGroup()" style="width:90%; margin:8px auto; display:block;">+ New Group</button>
+      </div>
+
+      <div class="sidebar-footer">
+        <span id="currentUserDisplay"></span>
+        <button onclick="logoutChat()" style="width:100%; margin-top:8px;">Logout</button>
+      </div>
+    </div>
+
+    <!-- RIGHT - MESSAGES -->
+    <div class="chat-main">
+      <div id="messagesContainer" class="messages-container"></div>
+      
+      <div class="chat-input-section">
+        <div style="display:flex; gap:8px; width:100%; box-sizing:border-box;">
+          <input type="text" 
+                 id="chatInput" 
+                 placeholder="Type a message..." 
+                 style="flex:1; padding:8px; border:1px solid #ccc; border-radius:4px;"
+                 onkeypress="if(event.key==='Enter') sendMessage()">
+          <button id="sendBtn" onclick="sendMessage()" style="padding:8px 16px; background:#5636e6; color:white; border:none; border-radius:4px; cursor:pointer;">Send</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ================= NEW GROUP DIALOG ================= -->
+<div id="newGroupDialog" class="window" style="display:none; top:50%; left:50%; transform:translate(-50%,-50%); width:400px;">
+  <div class="title-bar" onmousedown="dragWindow(event, 'newGroupDialog')">
+    Create Group
+    <button class="close-btn" onclick="closeNewGroup()">✕</button>
+  </div>
+  <div class="window-content" style="padding:15px;">
+    <p>Group Name:</p>
+    <input type="text" id="groupNameInput" placeholder="Enter group name" style="width:100%; padding:8px; margin-bottom:10px; box-sizing:border-box;">
+    
+    <p>Add Members (comma-separated):</p>
+    <textarea id="groupMembersInput" placeholder="username1, username2, username3" style="width:100%; height:80px; padding:8px; margin-bottom:10px; box-sizing:border-box;"></textarea>
+    
+    <div style="display:flex; gap:8px; justify-content:flex-end;">
+      <button onclick="closeNewGroup()">Cancel</button>
+      <button onclick="createGroup()" style="background:#5636e6; color:white; border:none; padding:8px 16px; cursor:pointer;">Create</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= NEW DIRECT MESSAGE DIALOG ================= -->
+<div id="newDirectDialog" class="window" style="display:none; top:50%; left:50%; transform:translate(-50%,-50%); width:350px;">
+  <div class="title-bar" onmousedown="dragWindow(event, 'newDirectDialog')">
+    Direct Message
+    <button class="close-btn" onclick="closeNewDirect()">✕</button>
+  </div>
+  <div class="window-content" style="padding:15px;">
+    <p>Start chat with:</p>
+    <select id="friendSelect" style="width:100%; padding:8px; margin-bottom:10px;">
+      <option value="">-- Select a friend --</option>
+    </select>
+    
+    <div style="display:flex; gap:8px; justify-content:flex-end;">
+      <button onclick="closeNewDirect()">Cancel</button>
+      <button onclick="startDirectChat()" style="background:#5636e6; color:white; border:none; padding:8px 16px; cursor:pointer;">Start Chat</button>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<!-- ================= SOUNDS ================= -->
+<audio id="sound-click" src="C:\Users\noah.cabrera42\OneDrive - Frenship ISD\Desktop\my website\sounds\Click Sound Effect.mp3"></audio>
+<audio id="sound-open" src="sounds/open.mp3"></audio>
+<audio id="sound-close" src="sounds/close.mp3"></audio>
+
+<script src="control.js" ></script>
+</body>   
+</html>

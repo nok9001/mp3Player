@@ -1,0 +1,571 @@
+    /* ========================
+   GLOBAL RESET
+======================== */
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  font-family: Tahoma, "MS Sans Serif", sans-serif;
+  font-size: 12px;
+  background-color: #008080; /* Classic Windows teal */
+}
+
+/* ========================
+   WINDOW SYSTEM
+======================== */
+.window {
+  position: absolute;
+  background: #c0c0c0;
+  border-top: 2px solid #ffffff;
+  border-left: 2px solid #ffffff;
+  border-bottom: 2px solid #404040;
+  border-right: 2px solid #404040;
+  box-shadow: none;
+  border-radius: 0;
+  display: none;
+  min-width: 250px;
+}
+
+/* ========================
+   TITLE BAR
+======================== */
+.title-bar {
+  height: 24px;
+  background: linear-gradient(to right, #000080, #1084d0);
+  color: white;
+  font-weight: bold;
+  padding: 0 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: move;
+}
+
+.close-btn {
+  background: #c0c0c0;
+  border-top: 2px solid #ffffff;
+  border-left: 2px solid #ffffff;
+  border-bottom: 2px solid #404040;
+  border-right: 2px solid #404040;
+  font-size: 11px;
+  cursor: pointer;
+  padding: 0 4px;
+}
+
+.close-btn:active {
+  border-top: 2px solid #404040;
+  border-left: 2px solid #404040;
+  border-bottom: 2px solid #ffffff;
+  border-right: 2px solid #ffffff;
+}
+
+/* ========================
+   WINDOW CONTENT
+======================== */
+.window-content {
+  padding: 10px;
+  background: #c0c0c0;
+}
+
+/* ========================
+   BUTTONS (3D STYLE)
+======================== */
+button {
+  background: #c0c0c0;
+  border-top: 2px solid #ffffff;
+  border-left: 2px solid #ffffff;
+  border-bottom: 2px solid #404040;
+  border-right: 2px solid #404040;
+  padding: 3px 8px;
+  font-family: Tahoma, sans-serif;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+button:active {
+  border-top: 2px solid #404040;
+  border-left: 2px solid #404040;
+  border-bottom: 2px solid #ffffff;
+  border-right: 2px solid #ffffff;
+}
+
+/* ========================
+   INPUTS / TEXTAREA
+======================== */
+input, select, textarea {
+  background: white;
+  border-top: 2px solid #404040;
+  border-left: 2px solid #404040;
+  border-bottom: 2px solid #ffffff;
+  border-right: 2px solid #ffffff;
+  font-family: Tahoma, sans-serif;
+  font-size: 12px;
+  padding: 3px;
+}
+
+/* ========================
+   TASKBAR
+======================== */
+#taskbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 32px;
+  background: #c0c0c0;
+  display: flex;
+  align-items: center;
+  border-top: 2px solid #ffffff;
+}
+
+/* Centered buttons */
+.task-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+}
+
+/* Taskbar buttons */
+.task-btn {
+  font-size: 14px;
+}
+
+/* Clock */
+#clock {
+  margin-left: auto;
+  padding-right: 10px;
+}
+
+/* ========================
+   PLAYLIST STYLE
+======================== */
+#playlist {
+  background: linear-gradient(to right, #000080, #1084d0);
+  border-top: 2px solid #404040;
+  border-left: 2px solid #404040;
+  border-bottom: 2px solid #ffffff;
+  border-right: 2px solid #ffffff;
+  overflow-y: auto;
+  padding: 4px;
+  list-style: none;
+  margin: 0;
+  flex: 1;
+}
+
+#playlist li {
+  padding: 4px;
+  cursor: pointer;
+}
+
+#playlist li:hover {
+  background: #000080;
+  color: white;
+}
+
+#playlistSelector {
+  background: white;
+  border-top: 2px solid #404040;
+  border-left: 2px solid #404040;
+  border-bottom: 2px solid #ffffff;
+  border-right: 2px solid #ffffff;
+  overflow-y: auto;
+  padding: 4px;
+  list-style: none;
+  margin: 0;
+  flex: 1;
+}
+
+#playlistSelector li {
+  padding: 6px 4px;
+  cursor: pointer;
+  color: #000080;
+  border-bottom: 1px solid #c0c0c0;
+}
+
+#playlistSelector li:hover {
+  background: #000080;
+  color: white;
+}
+
+#playlistSelector li.active {
+  background: #1084d0;
+  color: white;
+  font-weight: bold;
+}
+
+/* ========================
+   PLAYER LAYOUT - TWO COLUMNS
+======================== */
+.player {
+  display: flex;
+  height: calc(100% - 24px);
+  padding: 0;
+  gap: 0;
+}
+
+/* LEFT PANEL - PLAYLISTS */
+.player-left {
+  width: 200px;
+  display: flex;
+  flex-direction: column;
+  background: #c0c0c0;
+  border-right: 2px solid #404040;
+  flex-shrink: 0;
+}
+
+.playlist-header {
+  padding: 6px;
+  background: linear-gradient(to right, #000080, #1084d0);
+  color: white;
+  font-weight: bold;
+  border-bottom: 2px solid #404040;
+  flex-shrink: 0;
+  font-size: 12px;
+}
+
+.playlists-list-container {
+  flex: 1;
+  overflow-y: auto;
+  background: #c0c0c0;
+}
+
+/* RIGHT PANEL - PLAYER CONTROLS & SONGS */
+.player-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px;
+  background: #c0c0c0;
+  overflow: hidden;
+}
+
+/* CURRENT SONG DISPLAY */
+.current-song {
+  background: white;
+  border-top: 2px solid #404040;
+  border-left: 2px solid #404040;
+  border-bottom: 2px solid #ffffff;
+  border-right: 2px solid #ffffff;
+  padding: 6px;
+  font-size: 11px;
+  text-align: center;
+  min-height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* CONTROLS */
+.controls {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+}
+
+.controls input[type="file"] {
+  flex: 2;
+  min-width: 60px;
+}
+
+.controls button {
+  flex: 1;
+  min-width: 30px;
+  padding: 4px;
+}
+
+/* PROGRESS BAR */
+#progress-container {
+  height: 12px;
+  background: #808080;
+  border-top: 2px solid #404040;
+  border-left: 2px solid #404040;
+  border-bottom: 2px solid #ffffff;
+  border-right: 2px solid #ffffff;
+  flex-shrink: 0;
+}
+
+#progress {
+  height: 100%;
+  background: #000080;
+}
+
+/* SONGS HEADER */
+.songs-header {
+  padding: 4px 6px;
+  background: linear-gradient(to right, #000080, #1084d0);
+  color: white;
+  font-weight: bold;
+  font-size: 11px;
+  flex-shrink: 0;
+}
+
+/* PLAYLIST CONTROLS */
+.playlist-controls {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+  padding: 6px;
+  background: #c0c0c0;
+  border-top: 2px solid #404040;
+}
+
+.playlist-controls input,
+.playlist-controls button {
+  flex: 1;
+  min-width: 50px;
+  font-size: 11px;
+}
+
+/* ========================
+   MOVIE LIST
+======================== */
+#movieList {
+  background: white;
+  border-top: 2px solid #404040;
+  border-left: 2px solid #404040;
+  border-bottom: 2px solid #ffffff;
+  border-right: 2px solid #ffffff;
+  overflow-y: auto;
+}
+
+#movieList li {
+  padding: 4px;
+}
+
+#movieList li:hover {
+  background: #000080;
+  color: white;
+}
+.cidwo-layout {
+  display: flex;
+  height: calc(100% - 24px);
+  padding: 0;
+}
+
+/* LEFT SIDE */
+.video-section {
+  flex: 3;
+  background: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.video-section video {
+  width: 100%;
+  height: 100%;
+  background: black;
+}
+
+/* RIGHT SIDE */
+.movie-section {
+  flex: 1;
+  background: #c0c0c0;
+  border-left: 2px solid #404040;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+}
+
+.movie-title {
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+#movieList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  overflow-y: auto;
+  flex: 1;
+  background: white;
+
+  border-top: 2px solid #404040;
+  border-left: 2px solid #404040;
+  border-bottom: 2px solid #ffffff;
+  border-right: 2px solid #ffffff;
+}
+
+#movieList li {
+  padding: 4px;
+  cursor: pointer;
+}
+
+#movieList li:hover {
+  background: #000080;
+  color: white;
+}
+
+/* ========================
+   CHAT ROOM LAYOUT
+======================== */
+.chat-layout {
+  display: flex;
+  height: calc(100% - 24px);
+  padding: 0;
+  gap: 0;
+}
+
+.chat-sidebar {
+  width: 220px;
+  background: #c0c0c0;
+  border-right: 2px solid #404040;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.sidebar-header {
+  padding: 8px;
+  background: linear-gradient(to right, #000080, #1084d0);
+  color: white;
+  font-weight: bold;
+  border-bottom: 2px solid #404040;
+  font-size: 12px;
+}
+
+.sidebar-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid #808080;
+  padding: 6px 0;
+}
+
+.section-title {
+  padding: 6px 8px;
+  font-weight: bold;
+  color: #000080;
+  font-size: 11px;
+  background: #e8e8e8;
+}
+
+.chat-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex: 1;
+  overflow-y: auto;
+  background: white;
+}
+
+.chat-list li {
+  padding: 6px 8px;
+  border-bottom: 1px solid #c0c0c0;
+  cursor: pointer;
+  font-size: 11px;
+}
+
+.chat-list li:hover {
+  background: #e8f4ff;
+}
+
+.chat-list li.active {
+  background: #1084d0;
+  color: white;
+  font-weight: bold;
+}
+
+.sidebar-footer {
+  padding: 8px;
+  background: #c0c0c0;
+  border-top: 2px solid #404040;
+  font-size: 11px;
+}
+
+#currentUserDisplay {
+  display: block;
+  padding: 4px;
+  background: #e8e8e8;
+  border-radius: 2px;
+  margin-bottom: 6px;
+}
+
+.chat-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #c0c0c0;
+}
+
+.messages-container {
+  flex: 1;
+  overflow-y: auto;
+  background: white;
+  border-top: 2px solid #808080;
+  border-left: 2px solid #808080;
+  border-bottom: 2px solid #ffffff;
+  border-right: 2px solid #ffffff;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 6px;
+}
+
+.chat-message {
+  padding: 8px;
+  background: #e8e8e8;
+  border-radius: 3px;
+  word-wrap: break-word;
+  font-size: 11px;
+}
+
+.chat-message.user {
+  background: #1084d0;
+  color: white;
+  align-self: flex-end;
+  max-width: 70%;
+}
+
+.chat-message.other {
+  background: #e8e8e8;
+  color: black;
+  align-self: flex-start;
+  max-width: 70%;
+}
+
+.chat-message-sender {
+  font-weight: bold;
+  font-size: 10px;
+  opacity: 0.8;
+}
+
+.chat-message-timestamp {
+  font-size: 9px;
+  opacity: 0.6;
+  margin-top: 2px;
+}
+
+.chat-input-section {
+  padding: 8px;
+  background: #c0c0c0;
+  border-top: 2px solid #404040;
+  flex-shrink: 0;
+}
+
+  max-width: 80%;
+}
+
+.chat-message-timestamp {
+  font-size: 10px;
+  opacity: 0.7;
+  margin-top: 2px;
+}
+
+.chat-input-section {
+  padding: 6px;
+  background: #c0c0c0;
+  border-top: 2px solid #404040;
+  flex-shrink: 0;
+}
